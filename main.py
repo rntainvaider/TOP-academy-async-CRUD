@@ -21,7 +21,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-def get_current_user(token: str):
+def get_current_user(token: str) -> str:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
@@ -63,10 +63,9 @@ def get_current_admin(token: str = Depends(oauth2_scheme)) -> str:
     username = get_current_user(token)
     role = get_users(username)
     _, _use, _hash, _is_admin = role
-    try:
-        if not _is_admin or _is_admin != 1:
-            raise HTTPException(status_code=403, detail="Access forbidden")
-        return username
+    if not _is_admin or _is_admin != 1:
+        raise HTTPException(status_code=403, detail="Access forbidden")
+    return username
 
 
 def authenticate_user(username: str, password: str):
@@ -94,3 +93,9 @@ async def read_users_me(token: str = Depends(oauth2_scheme)) -> dict[str, str]:
 @app.get("/admin")
 async def read_admin_data(admin: str = Depends(get_current_admin)) -> dict[str, str]:
     return {"admin_data": f"VERY SECRET for {admin}"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="127.0.0.1", port=8000)
