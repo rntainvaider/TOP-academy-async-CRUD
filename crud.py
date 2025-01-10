@@ -1,14 +1,14 @@
 from models import User
-from schemas import AddUser
+from schemas import UserCreate
 
 # from database import SessionLocal
-from sqlalchemy.orm import Session
+from sqlalchemy.orm.session import Session
 
 # db = SessionLocal()
 
 
 # # Добавление нового пользователя
-# def create_new_user(user: AddUser):
+# def create_new_user(user: UserCreate):
 #     new_user = User(username=user.username, email=user.email, password=user.password)
 #     db.add(new_user)  # Добавляем в БД
 #     db.commit()  # Сохраняем изменения
@@ -17,7 +17,7 @@ from sqlalchemy.orm import Session
 
 
 # Добавление нового пользователя
-def create_new_user(user: AddUser, db: Session):
+def create_new_user(db: Session, user: UserCreate):
     new_user = User(username=user.username, email=user.email, password=user.password)
     db.add(new_user)  # Добавляем в БД
     db.commit()  # Сохраняем изменения
