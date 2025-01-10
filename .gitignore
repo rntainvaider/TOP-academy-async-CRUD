@@ -1,0 +1,4 @@
+filestructure.txt
+.pytest_cache/
+venv/
+__pycache__/
