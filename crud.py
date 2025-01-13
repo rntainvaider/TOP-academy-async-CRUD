@@ -1,5 +1,5 @@
 from models import User
-from schemas import UserCreate
+from schemas import UserCreate, UserUpdate
 from passlib.hash import bcrypt
 
 # from database import SessionLocal
@@ -22,5 +22,26 @@ def create_new_user(db: Session, user: UserCreate):
 
 
 # Удаление пользователя из базы
-def delete_user(db: Session, user):
-    pass
+def delete_user_in_base(db: Session, user_id: int):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user:
+        db.delete(db_user)
+        db.commit()  # Сохраняем изменения
+    return db_user
+
+
+# Изменение данныз пользователя
+def update_user_in_base(db: Session, user_id: int, user_update: UserUpdate):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if not db_user:
+        return None
+    for key, value in user_update.dict(exclude_unset=True).items():
+        setattr(db_user, key, value)
+    db.commit()  # Сохраняем изменения
+    db.refresh(db_user)
+    return db_user
+
+
+# Получение списка пользователей
+def get_users_in_base(db: Session):
+    return db.query(User).all()
