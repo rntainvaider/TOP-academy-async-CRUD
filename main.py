@@ -24,7 +24,6 @@ def get_db() -> Generator[Session, Any, None]:
 
 
 def get_current_user(db: Session = Depends(get_db)) -> User:
-    # Заглушка: замените на токен-аутентификацию
     user = db.query(User).filter(User.id == 1).first()
     if not user:
         raise HTTPException(status_code=401, detail="Not authenticated")
